@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:performance_nos_estudos_app/controllers/navigation_controller.dart';
 import 'package:performance_nos_estudos_app/view/components/app_bar_widget.dart';
 import 'package:performance_nos_estudos_app/view/components/side_drawer_widget.dart';
 import 'package:performance_nos_estudos_app/view/desktop/calendar_page_desktop.dart';
@@ -7,7 +9,6 @@ import 'package:performance_nos_estudos_app/view/desktop/revisoes_page_desktop.d
 import 'package:performance_nos_estudos_app/view/guia_estudos_page.dart';
 import 'package:performance_nos_estudos_app/view/login_page.dart';
 
-import '../../main.dart';
 
 class HomePageDesktop extends StatefulWidget {
   const HomePageDesktop({super.key});
@@ -17,6 +18,7 @@ class HomePageDesktop extends StatefulWidget {
 }
 
 class _HomePageDesktopState extends State<HomePageDesktop> {
+  final navigationController = GetIt.I<NavigationController>();
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,7 @@ class _HomePageDesktopState extends State<HomePageDesktop> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SideDrawer(isFixed: true,),
+            SideDrawer(isFixed: true,),
             ValueListenableBuilder<int>(
                 valueListenable: navigationController,
                 builder: (context, value, child) {
@@ -36,7 +38,7 @@ class _HomePageDesktopState extends State<HomePageDesktop> {
                     case 0:
                       return const DashboardPageDesktop();
                     case 1:
-                      return const RevisoesPage();
+                      return RevisoesPage();
                     case 2:
                       return const CalendarPageDesktop();
                     case 3:

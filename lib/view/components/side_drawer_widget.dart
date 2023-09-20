@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:performance_nos_estudos_app/controllers/navigation_controller.dart';
 
-import '../../main.dart';
 
 class SideDrawer extends StatelessWidget {
-  const SideDrawer({super.key, this.keyScaffold, required this.isFixed});
+  SideDrawer({super.key, this.keyScaffold, required this.isFixed});
 
   final GlobalKey<ScaffoldState>? keyScaffold;
   final bool isFixed;
+  final navigationController = GetIt.I<NavigationController>();
 
   closeDrawer() async {
     if (isFixed == false) keyScaffold!.currentState!.closeDrawer();

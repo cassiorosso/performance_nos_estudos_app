@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:performance_nos_estudos_app/controllers/navigation_controller.dart';
 import 'package:performance_nos_estudos_app/view/components/app_bar_widget.dart';
 import 'package:performance_nos_estudos_app/view/components/side_drawer_widget.dart';
 import 'package:performance_nos_estudos_app/view/mobile/revisoes_page_mobile.dart';
-
-import '../../main.dart';
 import '../guia_estudos_page.dart';
 import '../login_page.dart';
 import 'calendar_page_mobile.dart';
@@ -22,6 +22,7 @@ class _HomePageMobileState extends State<HomePageMobile> {
 
   @override
   Widget build(BuildContext context) {
+    final navigationController = GetIt.I<NavigationController>();
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.grey[300],
@@ -34,7 +35,7 @@ class _HomePageMobileState extends State<HomePageMobile> {
                     case 0:
                       return const DashboardPageMobile();
                     case 1:
-                      return const RevisoesPageMobile();
+                      return RevisoesPageMobile();
                     case 2:
                       return const CalendarPageMobile();
                     case 3:
