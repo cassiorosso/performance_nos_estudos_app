@@ -5,13 +5,13 @@ ConteudoModel conteudoModelFromJson(String str) => ConteudoModel.fromJson(json.d
 String conteudoModelToJson(ConteudoModel data) => json.encode(data.toJson());
 
 class ConteudoModel {
-    int id;
+    int? id;
     int areaId;
     String nome;
     int? usuarioId;
 
     ConteudoModel({
-        required this.id,
+        this.id,
         required this.areaId,
         required this.nome,
         this.usuarioId,

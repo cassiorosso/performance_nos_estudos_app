@@ -7,7 +7,7 @@ String revisaoModelToJson(RevisaoModel data) => json.encode(data.toJson());
 class RevisaoModel {
     int acerto;
     bool concluida;
-    int conteudoId;
+    int? conteudoId;
     DateTime data;
     DateTime dataProxima;
     int? id;
@@ -16,7 +16,7 @@ class RevisaoModel {
     RevisaoModel({
         required this.acerto,
         required this.concluida,
-        required this.conteudoId,
+        this.conteudoId,
         required this.data,
         required this.dataProxima,
         this.id,

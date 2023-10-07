@@ -21,19 +21,25 @@ class RevisoesController extends ValueNotifier<RevisaoItemState> {
   }
 
   Future listRevisoes() async {
-    value = LoadingRevisaoItemState();
-    try {
-      areaStore.fetchAreas();
-      var response = await _service.fetchRevisoesEmAndamento(
-          usuarioId: usuarioId, offset: offset);
-      revisoes = List.generate(response.length,
-          (index) => RevisaoItemModel.fromJson(response[index]));
-
-      value = SuccessRevisaoItemState(revisoes: revisoes);
-    } on Exception catch (exception) {
-      value = ErrorRevisaoItemState(errorMessage: exception.toString());
-    } catch (error) {
-      value = ErrorRevisaoItemState(errorMessage: error.toString());
+    if (revisoes.length == offset) {
+      value = LoadingRevisaoItemState();
+      try {
+        areaStore.fetchAreas();
+        var response = await _service.fetchRevisoesEmAndamento(
+            usuarioId: usuarioId, offset: offset);
+        List<RevisaoItemModel> listFromDatabase = [];
+        listFromDatabase = List.generate(response.length,
+            (index) => RevisaoItemModel.fromJson(response[index]));
+        if (listFromDatabase.length == 40) {
+          offset = offset + 40;
+        }
+        revisoes.addAll(listFromDatabase);
+        value = SuccessRevisaoItemState(revisoes: revisoes);
+      } on Exception catch (exception) {
+        value = ErrorRevisaoItemState(errorMessage: exception.toString());
+      } catch (error) {
+        value = ErrorRevisaoItemState(errorMessage: error.toString());
+      }
     }
   }
 
@@ -49,7 +55,7 @@ class RevisoesController extends ValueNotifier<RevisaoItemState> {
       revisoes.add(RevisaoItemModel(
           acerto: revisao.acerto,
           concluida: revisao.concluida,
-          conteudoId: revisao.conteudoId,
+          conteudoId: revisao.conteudoId!,
           dataProxima: revisao.dataProxima,
           data: revisao.data,
           id: revisao.id!,
@@ -76,7 +82,7 @@ class RevisoesController extends ValueNotifier<RevisaoItemState> {
         revisoes[oldRevisaoIndex] = RevisaoItemModel(
             acerto: revisao.acerto,
             concluida: revisao.concluida,
-            conteudoId: revisao.conteudoId,
+            conteudoId: revisao.conteudoId!,
             dataProxima: revisao.dataProxima,
             data: revisao.data,
             id: revisao.id!,
@@ -91,6 +97,10 @@ class RevisoesController extends ValueNotifier<RevisaoItemState> {
     }
   }
 
+  String formattedDate(DateTime date) {
+    return "${date.day}/${date.month}/${date.year}".toString();
+  }
+
   int calculateAcerto(
       {required int questoesCertas, required int totalQuestoes}) {
     return (questoesCertas / totalQuestoes).round();
@@ -98,10 +108,12 @@ class RevisoesController extends ValueNotifier<RevisaoItemState> {
 
   DateTime calculateDate({required DateTime date, required int acerto}) {
     DateTime dataProximaRevisao;
-    if (acerto < 0.5) {
+    if (acerto < 40) {
       dataProximaRevisao = date.add(const Duration(days: 3));
-    } else if (acerto < 0.8 && acerto >= 0.5) {
-      dataProximaRevisao = date.add(const Duration(days: 14));
+    } else if (acerto < 60 && acerto >= 40) {
+      dataProximaRevisao = date.add(const Duration(days: 12));
+    } else if (acerto < 80 && acerto >= 60) {
+      dataProximaRevisao = date.add(const Duration(days: 21));
     } else {
       dataProximaRevisao = date.add(const Duration(days: 32));
     }

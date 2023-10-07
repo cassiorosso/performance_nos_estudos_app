@@ -13,10 +13,8 @@ class RevisoesLegenda extends StatelessWidget {
         children: [
           Expanded(flex: 3, child: Text("Matéria")),
           Expanded(flex: 3, child: Text("Data última\nrevisão", textAlign: TextAlign.center,)),
-          Expanded(flex: 2, child: Text("Acerto (%)",textAlign: TextAlign.center)),
-          Expanded(flex: 3, child: Text("Data Próxima\nrevisão", textAlign: TextAlign.center)),
-          Expanded(flex: 1, child: Text("")),
-          Expanded(flex: 1, child: Text(""))
+          Expanded(flex: 3, child: Text("Acerto (%)",textAlign: TextAlign.center)),
+          Expanded(flex: 4, child: Text("Data Próxima\nrevisão", textAlign: TextAlign.center)),
         ],
       ),
     );

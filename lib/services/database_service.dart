@@ -98,7 +98,7 @@ class HasuraService implements IDatabase {
   Future<bool> concludeRevisao({required int revisaoId}) async {
     var response = await _hasuraConnect.mutation(
         _hasuraRequisitions.concludeRevisao,
-        variables: {"id": revisaoId});
+        variables: {"revisao_id": revisaoId});
     if (response["data"]["update_revisoes"]["affected_rows"] == 1) {
       return true;
     } else {
@@ -210,8 +210,8 @@ class HasuraRequisitions {
   """;
 
   final String editAcertoRevisao = """
-      mutation editAcertoRevisao(\$acerto: numeric!) {
-        update_revisoes(where: {id: {_eq: 1}}, _set: {acerto: \$acerto}) {
+      mutation editAcertoRevisao(\$acerto: numeric!, \$id: Int!) {
+        update_revisoes(where: {id: {_eq: \$id}}, _set: {acerto: \$acerto}) {
           affected_rows
         }
       }
