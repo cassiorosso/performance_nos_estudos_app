@@ -13,7 +13,7 @@ class RevisaoItemModel {
     DateTime dataProxima;
     DateTime data;
     int id;
-    int usuarioId;
+    String usuarioId;
     ConteudoModel conteudo;
 
     RevisaoItemModel({

@@ -29,8 +29,9 @@ class RevisaoCardWidget extends StatelessWidget {
       corFase = Colors.green[700];
     }
     return Card(
+      color: Colors.white,
       child: Padding(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(8),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -41,37 +42,6 @@ class RevisaoCardWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    PopupMenuButton(
-                        child: Icon(Icons.more_horiz, color: Colors.grey[400],),
-                        onSelected: (value) {
-                          switch (value) {
-                            case 'edit':
-                              showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return DialogEditName(
-                                        conteudoId: revisao.conteudoId);
-                                  });
-                            case 'delete':
-                              showDialog(
-                                  context: context,
-                                  builder: (context) => ConfirmationDialog(
-                                      conteudoId: revisao.conteudoId));
-                          }
-                        },
-                        itemBuilder: (BuildContext context) {
-                          return const [
-                            PopupMenuItem(
-                              value: 'edit',
-                              child: Text("Editar nome de conteúdo"),
-                            ),
-                            PopupMenuItem(
-                              value: 'delete',
-                              child: Text("Deletar conteúdo"),
-                            )
-                          ];
-                        }),
-                   const SizedBox(height: 3,),    
                     Text(revisao.conteudo.nome,
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 14)),
@@ -137,6 +107,45 @@ class RevisaoCardWidget extends StatelessWidget {
                 flex: 4,
                 child: Column(
                   children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Container(),
+                        PopupMenuButton(
+                            child: Icon(
+                              Icons.more_horiz,
+                              color: Colors.grey[400],
+                            ),
+                            onSelected: (value) {
+                              switch (value) {
+                                case 'edit':
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return DialogEditName(
+                                            conteudoId: revisao.conteudoId);
+                                      });
+                                case 'delete':
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) => ConfirmationDialog(
+                                          conteudoId: revisao.conteudoId));
+                              }
+                            },
+                            itemBuilder: (BuildContext context) {
+                              return const [
+                                PopupMenuItem(
+                                  value: 'edit',
+                                  child: Text("Editar nome de conteúdo"),
+                                ),
+                                PopupMenuItem(
+                                  value: 'delete',
+                                  child: Text("Deletar conteúdo"),
+                                )
+                              ];
+                            })
+                      ],
+                    ),
                     FittedBox(
                       fit: BoxFit.scaleDown,
                       child: Text(

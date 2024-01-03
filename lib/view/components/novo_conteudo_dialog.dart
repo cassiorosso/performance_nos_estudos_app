@@ -6,6 +6,7 @@ import 'package:performance_nos_estudos_app/models/revisao_model.dart';
 
 import '../../controllers/revisoes_controller.dart';
 import '../../stores/area_store.dart';
+import '../../stores/user_store.dart';
 
 class NovoConteudoDialog extends StatefulWidget {
   const NovoConteudoDialog({super.key});
@@ -16,12 +17,12 @@ class NovoConteudoDialog extends StatefulWidget {
 
 class _NovoConteudoDialogState extends State<NovoConteudoDialog> {
   final revisoesController = GetIt.I<RevisoesController>();
+  final usuarioStore = GetIt.I<UsuarioStore>();
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _controllerDate = TextEditingController();
   final areaStore = GetIt.I<AreaStore>();
   final List<DropdownMenuEntry<int>> areaEntries = <DropdownMenuEntry<int>>[];
   late DateTime data;
-  int usuarioId = 1;
 
   String conteudoNome = "";
   late int acertoInt;
@@ -108,6 +109,7 @@ class _NovoConteudoDialogState extends State<NovoConteudoDialog> {
                 },
                 onTap: () async {
                   DateTime? pickedDate = await showDatePicker(
+                      locale: const Locale('pt', 'BR'),
                       context: context,
                       initialEntryMode: DatePickerEntryMode.calendarOnly,
                       initialDate: DateTime.now(),
@@ -171,14 +173,14 @@ class _NovoConteudoDialogState extends State<NovoConteudoDialog> {
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   ConteudoModel conteudo =
-                      ConteudoModel(areaId: areaId, nome: conteudoNome);
+                      ConteudoModel(areaId: areaId, nome: conteudoNome, usuarioId: usuarioStore.user.id);
                   RevisaoModel revisao = RevisaoModel(
                       acerto: acertoInt,
                       concluida: false,
                       data: data,
                       dataProxima: revisoesController.calculateDate(
                           date: data, acerto: acertoInt),
-                      usuarioId: usuarioId);
+                      usuarioId: usuarioStore.user.id);
                   revisoesController.createConteudoRevisao(
                       conteudo: conteudo, revisao: revisao);
                   Navigator.pop(context);

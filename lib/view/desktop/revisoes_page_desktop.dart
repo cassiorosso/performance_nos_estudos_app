@@ -5,7 +5,6 @@ import 'package:performance_nos_estudos_app/states/revisao_item_state.dart';
 import 'package:performance_nos_estudos_app/stores/area_store.dart';
 import 'package:performance_nos_estudos_app/view/components/loading_widget.dart';
 import 'package:performance_nos_estudos_app/view/components/new_button_widget.dart';
-import 'package:performance_nos_estudos_app/view/components/novo_conteudo_dialog.dart';
 import 'package:performance_nos_estudos_app/view/components/revisao_card_widget.dart';
 import 'package:performance_nos_estudos_app/view/components/revisoes_legenda_widget.dart';
 
@@ -19,7 +18,6 @@ class RevisoesPage extends StatefulWidget {
 }
 
 class _RevisoesPageState extends State<RevisoesPage> {
-  
   @override
   void initState() {
     super.initState();
@@ -42,8 +40,7 @@ class _RevisoesPageState extends State<RevisoesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-        child: ListView(
+    return Column(
       children: [
         const NewButtonWidget(),
         const RevisoesLegenda(),
@@ -53,28 +50,31 @@ class _RevisoesPageState extends State<RevisoesPage> {
               if (value is LoadingRevisaoItemState) {
                 return const LoadingWidget();
               } else if (value is SuccessRevisaoItemState) {
-                return ListView.builder(
-                  controller: _scrollController,
-                  physics: const ScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: value.revisoes.length,
-                  itemBuilder: (context, index) {
-                    String area = areaStore.areas
-                        .firstWhere((element) =>
-                            element.id == value.revisoes[index].conteudo.areaId)
-                        .nome;
-                    return RevisaoCardWidget(
-                      revisao: value.revisoes[index],
-                      area: area,
-                    );
-                  },
+                return Expanded(
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    physics: const ScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: value.revisoes.length,
+                    itemBuilder: (context, index) {
+                      String area = areaStore.areas
+                          .firstWhere((element) =>
+                              element.id ==
+                              value.revisoes[index].conteudo.areaId)
+                          .nome;
+                      return RevisaoCardWidget(
+                        revisao: value.revisoes[index],
+                        area: area,
+                      );
+                    },
+                  ),
                 );
               } else if (value is ErrorRevisaoItemState) {
-                return ErrorCustomWidget(errorMessage: value.errorMessage);
+                return ErrorCustomWidget(errorMessage: value.errorMessage, indexButton: 0,);
               }
               return Container();
-            })
+            }),
       ],
-    ));
+    );
   }
 }

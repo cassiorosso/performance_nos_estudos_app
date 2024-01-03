@@ -6,15 +6,15 @@ String conteudoModelToJson(ConteudoModel data) => json.encode(data.toJson());
 
 class ConteudoModel {
     int? id;
-    int areaId;
+    int? areaId;
     String nome;
-    int? usuarioId;
+    String usuarioId;
 
     ConteudoModel({
         this.id,
-        required this.areaId,
+        this.areaId,
         required this.nome,
-        this.usuarioId,
+        required this.usuarioId,
     });
 
     factory ConteudoModel.fromJson(Map<String, dynamic> json) => ConteudoModel(

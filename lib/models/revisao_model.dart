@@ -11,7 +11,7 @@ class RevisaoModel {
     DateTime data;
     DateTime dataProxima;
     int? id;
-    int usuarioId;
+    String usuarioId;
 
     RevisaoModel({
         required this.acerto,

@@ -7,52 +7,25 @@ class NewButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Center(
-          child: InkWell(
-            onTap: ()=> showDialog(context: context, builder: (context)=> const NovoConteudoDialog()),
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.05,
-              width: MediaQuery.of(context).size.width * 0.1,
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Colors.blue,
-                      Colors.lightBlue,
-                    ]),
-                borderRadius: BorderRadius.circular(16.0),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                // ignore: prefer_const_literals_to_create_immutables
-                children: [
-                  const Text(""),
-                  const Text(
-                    "Novo Conteúdo",
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white),
-                  ),
-                  Container(
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: const BoxDecoration(
-                          shape: BoxShape.circle, color: Colors.white),
-                      child: Icon(
-                        Icons.add,
-                        size: 22.0,
-                        color: Colors.blue[800],
-                      ))
-                ],
-              ),
-            ),
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.blue[800],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
           ),
         ),
-      ],
+        onPressed: () => showDialog(
+            context: context, builder: (context) => const NovoConteudoDialog()),
+        child: const Padding(
+          padding: EdgeInsets.all(12),
+          child: Text(
+            "Adicionar novo conteúdo",
+            style: TextStyle(color: Colors.white, fontSize: 16),
+          ),
+        ),
+      ),
     );
   }
 }

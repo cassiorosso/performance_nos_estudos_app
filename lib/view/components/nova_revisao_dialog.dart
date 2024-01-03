@@ -23,11 +23,12 @@ class _NovaRevisaoDialogState extends State<NovaRevisaoDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
             padding: EdgeInsets.only(right: 8.0),
             child: Icon(
-              Icons.list,
+              Icons.add,
             ),
           ),
           Flexible(
@@ -45,12 +46,13 @@ class _NovaRevisaoDialogState extends State<NovaRevisaoDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Flexible(
-                child: Text("\nInsira a data de conclusão dessa revisão")),
+                child: Text("\nData de conclusão")),
             TextField(
               controller: _controllerDate,
               readOnly: true,
               onTap: () async {
                 DateTime? pickedDate = await showDatePicker(
+                    locale: const Locale('pt', 'BR'),
                     context: context,
                     initialEntryMode: DatePickerEntryMode.calendarOnly,
                     initialDate: DateTime.now(),
@@ -65,17 +67,17 @@ class _NovaRevisaoDialogState extends State<NovaRevisaoDialog> {
                 }
               },
               decoration: InputDecoration(
-                hintText: "12/12/2022",
+                hintText: "Ex.: 12/12/2022",
                 helperText:
                     "Data recomendada: ${revisoesController.formattedDate(widget.revisao.dataProxima)}",
                 border: const OutlineInputBorder(),
               ),
             ),
             const Flexible(
-                child: Text("\nInsira a porcentagem de acerto dessa revisão")),
+                child: Text("\nPorcentagem de acerto")),
             TextField(
               decoration: const InputDecoration(
-                hintText: "50%",
+                hintText: "Ex.: 50%",
                 border: OutlineInputBorder(),
                 suffix: Text("%"),
                 isDense: true,

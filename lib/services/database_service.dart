@@ -4,7 +4,7 @@ import 'package:performance_nos_estudos_app/models/revisao_model.dart';
 
 abstract class IDatabase {
   Future fetchRevisoesEmAndamento(
-      {required int usuarioId, required int offset});
+      {required String usuarioId, required int offset, required int limit});
   Future<Map> createConteudoRevisao(
       {required RevisaoModel revisao, required ConteudoModel conteudo});
   Future createRevisao({required RevisaoModel revisao});
@@ -13,7 +13,8 @@ abstract class IDatabase {
   Future<bool> concludeRevisao({required int revisaoId});
   Future<bool> editAcertoRevisao({required int revisaoId, required int acerto});
   Future<bool> deleteConteudoRevisoes({required int conteudoId});
-  
+  Future fetchConteudo(int conteudoId);
+  Future fetchConteudos();
   Future fetchAreas();
 }
 
@@ -25,10 +26,10 @@ class HasuraService implements IDatabase {
 
   @override
   Future fetchRevisoesEmAndamento(
-      {required int usuarioId, required int offset}) async {
+      {required String usuarioId, required int offset, required int limit}) async {
     var response = await _hasuraConnect.query(
         _hasuraRequisitions.queryRevisoesEmAndamento,
-        variables: {"usuario_id": usuarioId, "offset": offset});
+        variables: {"usuario_id": usuarioId, "offset": offset, "limit": limit});
     return response["data"]["revisoes"] as List;
   }
 
@@ -136,12 +137,25 @@ class HasuraService implements IDatabase {
     var response = await _hasuraConnect.query(_hasuraRequisitions.queryAreas);
     return response["data"]["areas"] as List;
   }
+
+  @override
+  Future fetchConteudo(int conteudoId) async {
+    var response = await _hasuraConnect.query(_hasuraRequisitions.queryConteudo,
+        variables: {"id": conteudoId});
+    return response["data"]["conteudos_by_pk"]["revisoes"] as List;
+  }
+  
+  @override
+  Future fetchConteudos() async{
+    var response = await _hasuraConnect.query(_hasuraRequisitions.queryConteudos);
+    return response["data"]["conteudos"] as List;
+  }
 }
 
 class HasuraRequisitions {
   final String queryRevisoesEmAndamento = """
-      query QueryRevisoesEmAndamento(\$usuario_id: Int!, \$offset: Int!) {
-        revisoes(order_by: {data_proxima: asc}, offset: \$offset, where: {usuario_id: {_eq: \$usuario_id}, concluida: {_eq: false}}, limit: 40) {
+      query QueryRevisoesEmAndamento(\$usuario_id: String!, \$offset: Int!, \$limit: Int!) {
+        revisoes(order_by: {data_proxima: asc}, offset: \$offset, where: {usuario_id: {_eq: \$usuario_id}, concluida: {_eq: false}}, limit: \$limit) {
           acerto
           concluida
           conteudo_id
@@ -153,13 +167,14 @@ class HasuraRequisitions {
             id
             nome
             area_id
+            usuario_id
           }
         }
       }
 """;
 
   final insertConteudoRevisao = """
-        mutation insertConteudoRevisao(\$area_id: Int!, \$nome: String!, \$acerto: numeric!, \$concluida: Boolean!, \$data: date!, \$data_proxima: date!, \$usuario_id: Int!) {
+        mutation insertConteudoRevisao(\$area_id: Int!, \$nome: String!, \$acerto: numeric!, \$concluida: Boolean!, \$data: date!, \$data_proxima: date!, \$usuario_id: String!) {
           insert_conteudos_one(object: {area_id: \$area_id, nome: \$nome, usuario_id: \$usuario_id, revisoes: {data: {usuario_id: \$usuario_id, data_proxima: \$data_proxima, data: \$data, concluida: \$concluida, acerto: \$acerto}}}) {
             id
             revisoes {
@@ -170,7 +185,7 @@ class HasuraRequisitions {
   """;
 
   final String createConteudo = """
-      mutation createConteudo(\$area_id: Int!, \$nome: String!, \$usuario_id: Int!) {
+      mutation createConteudo(\$area_id: Int!, \$nome: String!, \$usuario_id: String!) {
         insert_conteudos_one(object: {area_id: \$area_id, nome: \$nome, usuario_id: \$usuario_id}) {
           id
         }
@@ -178,7 +193,7 @@ class HasuraRequisitions {
   """;
 
   final String createRevisao = """
-      mutation createRevisao(\$acerto: numeric!, \$concluida: Boolean!, \$conteudo_id: Int!, \$data: date!, \$data_proxima: date!, \$usuario_id: Int! ) {
+      mutation createRevisao(\$acerto: numeric!, \$concluida: Boolean!, \$conteudo_id: Int!, \$data: date!, \$data_proxima: date!, \$usuario_id: String! ) {
         insert_revisoes_one(object: {acerto: \$acerto, concluida: \$concluida, conteudo_id: \$conteudo_id, data_proxima: \$data_proxima, data: \$data, usuario_id: \$usuario_id}) {
           id
         }
@@ -251,5 +266,26 @@ class HasuraRequisitions {
             nome
           }
         }
+  """;
+
+  final String queryConteudo = """
+        query queryConteudo(\$id: Int!) {
+          conteudos_by_pk(id: \$id) {
+            revisoes(order_by: {data: asc}) {
+              acerto
+              data
+            }
+          }
+        }
+  """;
+
+    final String queryConteudos = """
+      query queryConteudos {
+        conteudos {
+          id
+          nome
+          usuario_id
+        }
+      }
   """;
 }
